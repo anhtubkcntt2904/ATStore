@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void ActionViewFlipper() {
         ArrayList<String> mangquangcao = new ArrayList<>();
+        mangquangcao.add("");
     }
 
     private void ActionBar() {
