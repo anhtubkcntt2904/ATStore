@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
 
 import com.example.anhtu.atstore.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     ListView listViewmanhinhchinh;
     DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +37,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void ActionViewFlipper() {
         ArrayList<String> mangquangcao = new ArrayList<>();
-        mangquangcao.add("");
+        mangquangcao.add("https://2sao.vietnamnetjsc.vn/images/2018/04/29/21/15/st.jpg");
+        mangquangcao.add("https://ngocdenroi.com/wp-content/uploads/2015/11/kiem-tien-online-voi-chuong-trinh-affiliate-cua-lazada.jpg");
+        mangquangcao.add("http://ggfc.vn/Content/images/QC/BODY-CUC-SOC-GIA-CUC-SOC-500K-THANG.jpg");
+        for (int i = 0; i < mangquangcao.size(); i++) {
+            ImageView imageView = new ImageView(getApplicationContext());
+            Picasso.with(getApplicationContext()).load(mangquangcao.get(i)).into(imageView);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            viewFlipper.addView(imageView);
+        }
+        viewFlipper.setFlipInterval(5000);
+        viewFlipper.setAutoStart(true);
     }
 
     private void ActionBar() {
@@ -50,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void AnhXa() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout); 
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         toolbar = (Toolbar) findViewById(R.id.toolbarmanhinhchinh);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewlipper);
         recyclerViewmanhinhchinh = (RecyclerView) findViewById(R.id.recyclerview);
