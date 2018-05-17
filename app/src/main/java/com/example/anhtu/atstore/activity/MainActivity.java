@@ -5,6 +5,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,10 +15,23 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.anhtu.atstore.R;
 import com.example.anhtu.atstore.adapter.LoaispAdapter;
+import com.example.anhtu.atstore.adapter.SanphamAdapter;
 import com.example.anhtu.atstore.model.Loaisp;
+import com.example.anhtu.atstore.model.Sanpham;
+import com.example.anhtu.atstore.ultil.CheckConnection;
+import com.example.anhtu.atstore.ultil.Server;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -31,14 +45,103 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ArrayList<Loaisp> mangloaisp;
     LoaispAdapter loaispAdapter;
+    //thông tin loại sản phẩm
+    int id = 0;
+    String tenloaisp = "";
+    String hinhanhloaisp = "";
+    ArrayList<Sanpham> mangsanpham;
+    SanphamAdapter sanphamAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AnhXa();
-        ActionBar();
-        ActionViewFlipper();
+        //kiểm tra kết nối thành công thì thực hiện các hành động tương ứng
+        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+            ActionBar();
+            ActionViewFlipper();
+            GetDuLieuLoaisp();
+            GetDuLieuSPMoiNhat();
+        } else {
+            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+            finish();
+        }
+    }
+
+    private void GetDuLieuSPMoiNhat() {
+        //đọc nội dung của đường dẫn url bằng thư viện Volley
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        //hỗ trợ việc đọc json
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Server.Duongdansanphammoinhat, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    int ID = 0;
+                    String Tensanpham = "";
+                    Integer Giasanpham = 0;
+                    String Hinhanhsanpham = "";
+                    String Motasanpham = "";
+                    int IDsanpham = 0;
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            ID = jsonObject.getInt("id");
+                            Tensanpham = jsonObject.getString("tensp");
+                            Giasanpham = jsonObject.getInt("giasp");
+                            Hinhanhsanpham = jsonObject.getString("hinhanhsp");
+                            Motasanpham = jsonObject.getString("motasp");
+                            IDsanpham = jsonObject.getInt("idsanpham");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
+    private void GetDuLieuLoaisp() {
+        //đọc nội dung của đường dẫn url bằng thư viện Volley
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        //hỗ trợ việc đọc json
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Server.DuongdanLoaisp, new Response.Listener<JSONArray>() {
+            //response khi đọc json
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            //lấy dữ liệu động cho điện thoại và laptop
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            id = jsonObject.getInt("id");
+                            tenloaisp = jsonObject.getString("tenloaisp");
+                            hinhanhloaisp = jsonObject.getString("hinhanhloaisp");
+                            mangloaisp.add(new Loaisp(id, tenloaisp, hinhanhloaisp));
+                            //adapter thực hiện các thay đổi tương ứng
+                            loaispAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //fix cứng dữ liệu cho Contact và Info
+                    mangloaisp.add(3, new Loaisp(0, "Contact", "http://ggfc.vn/Content/images/QC/BODY-CUC-SOC-GIA-CUC-SOC-500K-THANG.jpg"));
+                    mangloaisp.add(4, new Loaisp(0, "Info", "http://ggfc.vn/Content/images/QC/BODY-CUC-SOC-GIA-CUC-SOC-500K-THANG.jpg"));
+                }
+            }
+        }, new Response.ErrorListener() {
+            //có lỗi sẽ trả về đây
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CheckConnection.showToast_Short(getApplicationContext(), error.toString());
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
     }
 
     private void ActionViewFlipper() {
@@ -82,8 +185,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewmanhinhchinh = (RecyclerView) findViewById(R.id.recyclerview);
         navigationView = (NavigationView) findViewById(R.id.navigationView);
         listViewmanhinhchinh = (ListView) findViewById(R.id.listviewmanhinhchinh);
+        //set adapter cho loại sản phẩm
         mangloaisp = new ArrayList<>();
+        mangloaisp.add(0, new Loaisp(0, "Main Menu", "http://ggfc.vn/Content/images/QC/BODY-CUC-SOC-GIA-CUC-SOC-500K-THANG.jpg"));
         loaispAdapter = new LoaispAdapter(mangloaisp, getApplicationContext());
         listViewmanhinhchinh.setAdapter(loaispAdapter);
+        //set adapter cho sản phẩm
+        mangsanpham = new ArrayList<>();
+        sanphamAdapter = new SanphamAdapter(getApplicationContext(), mangsanpham);
+        recyclerViewmanhinhchinh.setHasFixedSize(true);
+        //tạo recyclerview dưới dạng một gridview
+        recyclerViewmanhinhchinh.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        //set adapter cho recyclerview
+
     }
 }
