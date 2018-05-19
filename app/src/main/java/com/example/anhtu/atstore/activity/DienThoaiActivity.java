@@ -110,7 +110,7 @@ public class DienThoaiActivity extends AppCompatActivity {
     private void GetData(int Page) {
         //biến để đưa request lên server
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String duongdan = Server.Duongdandienthoai + String.valueOf(Page);
+        String duongdan = Server.Duongdandienthoai+String.valueOf(Page);
         //đọc về hết tất cả dữ liệu dưới dạng một string
         StringRequest stringRequest = new StringRequest(Request.Method.POST, duongdan, new Response.Listener<String>() {
             //dữ liệu trả về được xử lí trong đây
@@ -185,7 +185,6 @@ public class DienThoaiActivity extends AppCompatActivity {
     private void GetIdloaisp() {
         //get id loại sản phẩm được truyển qua từ mainactivity, nếu không tìm thấy thì trả về giá trị mặc định
         iddt = getIntent().getIntExtra("idloaisanpham", -1);
-        Log.d("giatriloaisanpham", iddt + "");
     }
 
     private void AnhXa() {
