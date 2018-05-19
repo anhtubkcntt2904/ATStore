@@ -46,12 +46,13 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <android.support.v7.app.AlertController.RecycleListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.app.AlertController.RecycleListView>
+                </android.support.v7.widget.RecyclerView>
+
             </LinearLayout>
         </LinearLayout>
 

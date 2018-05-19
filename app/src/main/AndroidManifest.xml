@@ -19,6 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.DienThoaiActivity" />
+        <activity android:name=".activity.LapTopActivity" />
+        <activity android:name=".activity.LienHeActivity" />
+        <activity android:name=".activity.ThongTinActivity" />
+        <activity android:name=".activity.ChiTietSanPham"></activity>
     </application>
 
 </manifest>

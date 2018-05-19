@@ -1,5 +1,6 @@
 package com.example.anhtu.atstore.activity;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
@@ -63,10 +65,72 @@ public class MainActivity extends AppCompatActivity {
             ActionViewFlipper();
             GetDuLieuLoaisp();
             GetDuLieuSPMoiNhat();
+            CatchOnItemListView();
         } else {
             CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
             finish();
         }
+    }
+
+    //bắt sự kiện khi click vào item trong list view
+    private void CatchOnItemListView() {
+        listViewmanhinhchinh.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+                        }
+                        //đóng màn hình listview hiện tại, ban đầu mở là kiểu gravity compat thì giờ đóng cũng vậy
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 1:
+                        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, DienThoaiActivity.class);
+                            //gửi id của loại sản phẩm để hiển thị tương ứng
+                            intent.putExtra("idloaisanpham",mangloaisp.get(position).getId());
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 2:
+                        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, LapTopActivity.class);
+                            //gửi id của loại sản phẩm để hiển thị tương ứng
+                            intent.putExtra("idloaisanpham",mangloaisp.get(position).getId());
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 3:
+                        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, LienHeActivity.class);
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 4:
+                        if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, ThongTinActivity.class);
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                }
+            }
+        });
     }
 
     private void GetDuLieuSPMoiNhat() {
@@ -92,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
                             Hinhanhsanpham = jsonObject.getString("hinhanhsp");
                             Motasanpham = jsonObject.getString("motasp");
                             IDsanpham = jsonObject.getInt("idsanpham");
+                            mangsanpham.add(new Sanpham(ID, Tensanpham, Giasanpham, Hinhanhsanpham, Motasanpham, IDsanpham));
+                            //cập nhật bản vẽ để đưa lên giao diện
+                            sanphamAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -104,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //thực hiện request bằng cách truyển vào json array request
+        requestQueue.add(jsonArrayRequest);
     }
 
     private void GetDuLieuLoaisp() {
@@ -197,6 +266,6 @@ public class MainActivity extends AppCompatActivity {
         //tạo recyclerview dưới dạng một gridview
         recyclerViewmanhinhchinh.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         //set adapter cho recyclerview
-
+        recyclerViewmanhinhchinh.setAdapter(sanphamAdapter);
     }
 }

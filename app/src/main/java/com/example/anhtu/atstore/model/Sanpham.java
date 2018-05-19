@@ -1,10 +1,12 @@
 package com.example.anhtu.atstore.model;
 
+import java.io.Serializable;
+
 /**
  * Created by AnhTu on 5/16/2018.
  */
 
-public class Sanpham {
+public class Sanpham implements Serializable{
     public int ID;
     public String Tensanpham;
     public Integer Giasanpham;
