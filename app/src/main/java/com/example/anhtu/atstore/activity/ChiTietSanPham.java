@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -43,6 +45,25 @@ public class ChiTietSanPham extends AppCompatActivity {
         GetInformation();
         CatchEventSpinner();
         EventButton();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //gắn vào menu
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    //bắt sự kiện khi click vào item menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            //nếu click vào item giỏ hàng cart thì sang màn hình giỏ hàng
+            case R.id.menugiohang:
+                Intent intent = new Intent(getApplicationContext(), com.example.anhtu.atstore.activity.Giohang.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //bắt sự kiện thêm vào giỏ hàng
@@ -107,7 +128,7 @@ public class ChiTietSanPham extends AppCompatActivity {
         Idsanpham = sanpham.getIDSanpham();
         txtten.setText(TenChitiet);
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-        txtgia.setText("Giá : " + decimalFormat.format(GiaChitiet) + " Đ    ");
+        txtgia.setText("Price : " + decimalFormat.format(GiaChitiet) + " Đ    ");
         txtmota.setText(MotaChitiet);
         Picasso.with(getApplicationContext()).load(HinhanhChitiet)
                 .placeholder(R.drawable.noimage)

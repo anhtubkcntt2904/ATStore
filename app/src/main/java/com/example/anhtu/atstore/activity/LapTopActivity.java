@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -64,6 +66,25 @@ public class LapTopActivity extends AppCompatActivity {
             CheckConnection.showToast_Short(getApplicationContext(), "please check your connection");
             finish();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //gắn vào menu
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    //bắt sự kiện khi click vào item menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            //nếu click vào item giỏ hàng cart thì sang màn hình giỏ hàng
+            case R.id.menugiohang:
+                Intent intent = new Intent(getApplicationContext(), com.example.anhtu.atstore.activity.Giohang.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void GetIdloaisp() {

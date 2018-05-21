@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="Product price: "
-                android:textColor="#f20808"
+                android:textColor="#eb07ef"
                 android:textSize="19sp" />
 
             <Spinner

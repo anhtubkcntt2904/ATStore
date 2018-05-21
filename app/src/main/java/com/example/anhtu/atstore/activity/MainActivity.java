@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -74,6 +76,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //gắn vào menu
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    //bắt sự kiện khi click vào item menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            //nếu click vào item giỏ hàng cart thì sang màn hình giỏ hàng
+            case R.id.menugiohang:
+                Intent intent = new Intent(getApplicationContext(), com.example.anhtu.atstore.activity.Giohang.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //bắt sự kiện khi click vào item trong list view
     private void CatchOnItemListView() {
         listViewmanhinhchinh.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -94,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
                             Intent intent = new Intent(MainActivity.this, DienThoaiActivity.class);
                             //gửi id của loại sản phẩm để hiển thị tương ứng
-                            intent.putExtra("idloaisanpham",mangloaisp.get(position).getId());
+                            intent.putExtra("idloaisanpham", mangloaisp.get(position).getId());
                             startActivity(intent);
                         } else {
                             CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
@@ -105,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
                             Intent intent = new Intent(MainActivity.this, LapTopActivity.class);
                             //gửi id của loại sản phẩm để hiển thị tương ứng
-                            intent.putExtra("idloaisanpham",mangloaisp.get(position).getId());
+                            intent.putExtra("idloaisanpham", mangloaisp.get(position).getId());
                             startActivity(intent);
                         } else {
                             CheckConnection.showToast_Short(getApplicationContext(), "Please check your connection");
@@ -269,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewmanhinhchinh.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         //set adapter cho recyclerview
         recyclerViewmanhinhchinh.setAdapter(sanphamAdapter);
-        if(manggiohang == null) {
+        if (manggiohang == null) {
             manggiohang = new ArrayList<>();
         }
     }
