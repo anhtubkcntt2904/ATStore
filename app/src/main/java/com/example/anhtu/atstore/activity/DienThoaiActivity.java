@@ -6,7 +6,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -96,11 +95,11 @@ public class DienThoaiActivity extends AppCompatActivity {
                 //và tổng số item != 0
                 //không load dữ liệu liên tục
                 //chưa load hết dữ liệu
-                if (FirstItem + VisibleItem == TotalItem && TotalItem != 0 && !isLoading && !limitadata) {
+                if (FirstItem + VisibleItem == TotalItem && TotalItem != 0 && isLoading == false && limitadata == false) {
                     //bắt đầu thread để load dữ liệu
                     isLoading = true;
-                    Thread thread = new Thread();
-                    thread.start();
+                    ThreadData threadData = new ThreadData();
+                    threadData.start();
                 }
             }
         });

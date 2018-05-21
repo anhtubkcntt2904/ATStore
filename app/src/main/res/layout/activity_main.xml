@@ -20,8 +20,9 @@
                 android:id="@+id/toolbarmanhinhchinh"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#64a4f2"
-                app:title="Main Menu">
+                android:background="#56b7d2"
+                app:titleTextColor="#ffffff"
+                app:title="Main menu">
 
             </android.support.v7.widget.Toolbar>
 
@@ -35,16 +36,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#64a4f2"
+                android:background="#56b7d2"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="New Product"
+                    android:textColor="#ffffff"
+                    android:text="New product"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                     />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerview"

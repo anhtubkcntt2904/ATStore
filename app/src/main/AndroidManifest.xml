@@ -23,7 +23,8 @@
         <activity android:name=".activity.LapTopActivity" />
         <activity android:name=".activity.LienHeActivity" />
         <activity android:name=".activity.ThongTinActivity" />
-        <activity android:name=".activity.ChiTietSanPham"></activity>
+        <activity android:name=".activity.ChiTietSanPham" />
+        <activity android:name=".activity.Giohang"></activity>
     </application>
 
 </manifest>

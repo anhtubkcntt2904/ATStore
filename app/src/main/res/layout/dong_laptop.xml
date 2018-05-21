@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:text="Product Name: "
-                    android:textColor="#24c9f2"
+                    android:textColor="#56b7d2"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 

@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.anhtu.atstore.R;
 import com.example.anhtu.atstore.adapter.LoaispAdapter;
 import com.example.anhtu.atstore.adapter.SanphamAdapter;
+import com.example.anhtu.atstore.model.Giohang;
 import com.example.anhtu.atstore.model.Loaisp;
 import com.example.anhtu.atstore.model.Sanpham;
 import com.example.anhtu.atstore.ultil.CheckConnection;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     String hinhanhloaisp = "";
     ArrayList<Sanpham> mangsanpham;
     SanphamAdapter sanphamAdapter;
+    public static ArrayList<Giohang> manggiohang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,5 +269,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewmanhinhchinh.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         //set adapter cho recyclerview
         recyclerViewmanhinhchinh.setAdapter(sanphamAdapter);
+        if(manggiohang == null) {
+            manggiohang = new ArrayList<>();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.anhtu.atstore.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.anhtu.atstore.R;
+import com.example.anhtu.atstore.activity.ChiTietSanPham;
 import com.example.anhtu.atstore.model.Sanpham;
+import com.example.anhtu.atstore.ultil.CheckConnection;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -72,6 +75,16 @@ public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ItemHold
             imghinhsanpham = (ImageView) itemView.findViewById(R.id.imageviewsanpham);
             txtgiasanpham = (TextView) itemView.findViewById(R.id.textviewgiasanpham);
             txttensanpham = (TextView) itemView.findViewById(R.id.textviewtensanpham);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ChiTietSanPham.class);
+                    intent.putExtra("thongtinsanpham",arraysanpham.get(getPosition()));
+                    intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                    CheckConnection.showToast_Short(context, arraysanpham.get(getPosition()).getTensanpham());
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

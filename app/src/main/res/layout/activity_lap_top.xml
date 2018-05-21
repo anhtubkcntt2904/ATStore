@@ -11,7 +11,7 @@
         android:id="@+id/toolbarlaptop"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#8fbdf4"
+        android:background="#56b7d2"
         app:title="Laptop"
         app:titleTextColor="#faf9f9">
 

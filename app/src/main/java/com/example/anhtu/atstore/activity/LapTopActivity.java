@@ -1,10 +1,16 @@
 package com.example.anhtu.atstore.activity;
 
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
@@ -38,6 +44,11 @@ public class LapTopActivity extends AppCompatActivity {
     //khi chọn sản phẩm sẽ truyền id sản phẩm qua
     int idlaptop = 0;
     int page = 1;
+    //sủ dụng progress bar, cho hiển thị ở dưới list view
+    View footerview;
+    boolean isLoading = false;
+    boolean limitadata = false;
+    mHandler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,7 @@ public class LapTopActivity extends AppCompatActivity {
             GetIdloaisp();
             ActionToolBar();
             GetData(page);
+            LoadMoreData();
         }else{
             CheckConnection.showToast_Short(getApplicationContext(), "please check your connection");
             finish();
@@ -65,6 +77,11 @@ public class LapTopActivity extends AppCompatActivity {
         manglaptop = new ArrayList<>();
         laptopAdapter = new LaptopAdapter(getApplicationContext(), manglaptop);
         lvlaptop.setAdapter(laptopAdapter);
+        //gán một layout vào màn hình
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        //gán layout cho biến View
+        footerview = inflater.inflate(R.layout.progressbar, null);
+        mHandler = new mHandler();
     }
 
     private void ActionToolBar() {
@@ -100,6 +117,8 @@ public class LapTopActivity extends AppCompatActivity {
                 //response trả về dưới dạng một chuỗi json
                 //khi không có dữ liệu thì trả về [] nên check != 2
                 if (response != null && response.length() != 2) {
+                    //khi có dữ liệu đổ về thì tắt progress bar
+                    lvlaptop.removeFooterView(footerview);
                     //tạo biến để đọc chuỗi json
                     try {
                         JSONArray jsonArray = new JSONArray(response);
@@ -118,6 +137,11 @@ public class LapTopActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    //khi hết dữ liệu thì remove progress bar và toast thông báo
+                } else {
+                    limitadata = true;
+                    lvlaptop.removeFooterView(footerview);
+                    CheckConnection.showToast_Short(getApplicationContext(), "No more data");
                 }
             }
         }, new Response.ErrorListener() {
@@ -137,5 +161,82 @@ public class LapTopActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(stringRequest);
+    }
+
+    private void LoadMoreData() {
+        //bắt sự kiện khi click vào các item
+        //gửi dữ liệu sang màn hình hiển thị chi tiết sản phẩm
+        lvlaptop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), ChiTietSanPham.class);
+                //truyền dưới dạng một Object
+                //có thể truyền dạng String
+                intent.putExtra("thongtinsanpham", manglaptop.get(position));
+                startActivity(intent);
+            }
+        });
+        //bắt sự kiện khi scroll list view load thêm sản phẩm điện thoại
+        lvlaptop.setOnScrollListener(new AbsListView.OnScrollListener() {
+            //vuốt list view đến một vị trí nào đó
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            //khi đang vuốt list view
+            @Override
+            public void onScroll(AbsListView view, int FirstItem, int VisibleItem, int TotalItem) {
+                //bắt vị trí cuối cùng
+                //vị trí đầu tiên + số lượng có thể nhìn thấy được mà bằng tổng số item => đang ở vị trí cuối cùng
+                //và tổng số item != 0
+                //không load dữ liệu liên tục
+                //chưa load hết dữ liệu
+                if (FirstItem + VisibleItem == TotalItem && TotalItem != 0 && isLoading == false && !limitadata == false) {
+                    //bắt đầu thread để load dữ liệu
+                    isLoading = true;
+                    ThreadData threadData = new ThreadData();
+                    threadData.start();
+                }
+            }
+        });
+    }
+
+    public class mHandler extends Handler {
+        //function quản lí các progress gửi lên
+        @Override
+        public void handleMessage(Message msg) {
+            //bắt các msg gửi lên
+            switch (msg.what) {
+                case 0:
+                    //adđ vào thanh progress bar
+                    lvlaptop.addFooterView(footerview);
+                    break;
+                case 1:
+                    //cập nhật và đổ dữ liệu list view lên
+                    GetData(++page);
+                    isLoading = false;
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    }
+
+    public class ThreadData extends Thread {
+        //thực hiện chạy các luồng bên trong và gửi msg đến Handler để xử lí
+        @Override
+        public void run() {
+            //lần đầu gửi msg sang cho bên mHandler để add footer progress bar
+            mHandler.sendEmptyMessage(0);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //muốn liên kết tiếp thì sử dụng obtain messgae
+            Message message = mHandler.obtainMessage(1);
+            mHandler.sendMessage(message);
+            super.run();
+        }
     }
 }

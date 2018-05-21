@@ -8,7 +8,7 @@
     tools:context="com.example.anhtu.atstore.activity.DienThoaiActivity">
 
     <android.support.v7.widget.Toolbar
-        android:background="#64a4f2"
+        android:background="#56b7d2"
         app:titleTextColor="#faf9f9"
         app:title="Phone"
         android:id="@+id/toolbardienthoai"
